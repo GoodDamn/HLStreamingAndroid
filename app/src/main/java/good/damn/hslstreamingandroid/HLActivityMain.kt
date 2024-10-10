@@ -1,5 +1,6 @@
 package good.damn.hslstreamingandroid
 
+import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,7 @@ import good.damn.hslstreamingandroid.http.listeners.HLListenerM3U8OnGetSequences
 import good.damn.hslstreamingandroid.model.HLModelStreaming
 import good.damn.hslstreamingandroid.model.m3u8.HLModelM3U8Playlist
 import good.damn.hslstreamingandroid.model.m3u8.sequence.HLModelM3U8Sequences
+import good.damn.hslstreamingandroid.stream.HLStream
 
 class HLActivityMain
 : AppCompatActivity(),
@@ -56,6 +58,10 @@ HLListenerM3U8OnGetSequences {
     ) {
         Log.d(TAG, "onGetM3U8Sequences: streamOptions: $streamConfig")
         Log.d(TAG, "onGetM3U8Sequences: $sequences")
+
+        HLStream(
+            sequences
+        ).start()
     }
 
 }
