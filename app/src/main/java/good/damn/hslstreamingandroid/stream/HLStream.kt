@@ -52,16 +52,30 @@ class HLStream(
                 file.path
             )
 
-            media.getFrameAtTime(0)?.apply {
-                Log.d(TAG, "start: FRAME_WIDTH: $width $height")
-                write(
-                    HLFile(
-                        "${it.url}.jpeg"
-                    )
+            var prevTime = System.currentTimeMillis()
+            var duration = 0L
+
+            while (true) {
+                val currentTime = System.currentTimeMillis()
+                duration += currentTime - prevTime
+                prevTime = currentTime
+                Log.d(TAG, "start: TIMEEEEE: $currentTime $prevTime $duration")
+                if (duration > 2000) {
+                    break
+                }
+
+                val bitmap = media.getFrameAtTime(
+                    duration
+                )
+
+                if (bitmap == null) {
+                    break
+                }
+
+                onGetFrame?.invoke(
+                    bitmap
                 )
             }
-
-
 
             Log.d(
                 TAG,

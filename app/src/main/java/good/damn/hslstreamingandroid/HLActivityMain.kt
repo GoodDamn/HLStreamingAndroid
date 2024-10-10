@@ -3,6 +3,7 @@ package good.damn.hslstreamingandroid
 import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.hslstreamingandroid.http.HLClient
 import good.damn.hslstreamingandroid.http.listeners.HLListenerM3U8OnGetPlaylist
@@ -21,6 +22,8 @@ HLListenerM3U8OnGetSequences {
         private const val TAG = "HLActivityMain"
     }
 
+    private var mImageView: ImageView? = null
+
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
@@ -35,6 +38,11 @@ HLListenerM3U8OnGetSequences {
             getPlaylistAsync()
         }
 
+        mImageView = ImageView(
+            this
+        ).apply {
+            setContentView(this)
+        }
     }
 
     override fun onGetM3U8Playlist(
@@ -61,7 +69,16 @@ HLListenerM3U8OnGetSequences {
 
         HLStream(
             sequences
-        ).start()
+        ).apply {
+            onGetFrame = {
+                HLApp.ui {
+                    mImageView?.setImageBitmap(
+                        it
+                    )
+                }
+            }
+            start()
+        }
     }
 
 }
