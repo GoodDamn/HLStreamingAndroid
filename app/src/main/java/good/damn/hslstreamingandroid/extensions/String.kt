@@ -36,7 +36,8 @@ fun String.splitChar(
     chars().forEach {
         if (it == 0x22) {
             isQuote = !isQuote
-        } else if (it == splitChar && !isQuote) {
+            return@forEach
+        } else if ((it == splitChar || it == 0xA) && !isQuote) {
             val bytes = sepList.toByteArray()
             val str = String(
                 bytes,
@@ -67,19 +68,18 @@ fun String.splitChar(
 }
 
 fun String.getProperties(
-    splitChar: Int
+    splitChar: Int,
+    splitKeyValue: String
 ) = HashMap<String,String>().apply {
     val split = splitChar(splitChar)
-    Log.d("String", "getProperties: $split")
-//    split(
-//        ",".toRegex()
-//    ).forEach {
-//        val eqId = it.indexOf("=")
-//        if (eqId == -1) {
-//            return@forEach
-//        }
-//        val key = it.substring(0,eqId)
-//        val value = it.substring(eqId+1)
-//        set(key,value)
-//    }
+    for (it in split) {
+        val eqId = it.indexOf(splitKeyValue)
+        if (eqId == -1) {
+            set("URL", it)
+            continue
+        }
+        val key = it.substring(0,eqId)
+        val value = it.substring(eqId+1)
+        set(key,value)
+    }
 }

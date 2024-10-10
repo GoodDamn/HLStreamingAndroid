@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HSLStreamingAndroid"
+        android:name=".HLApp"
         tools:targetApi="31">
         <activity android:name=".HLActivityMain"
             android:exported="true">

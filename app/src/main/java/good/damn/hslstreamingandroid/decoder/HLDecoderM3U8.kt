@@ -36,9 +36,11 @@ class HLDecoderM3U8(
 
             Log.d(TAG, "decode: $tag $params")
 
-            availableTags[tag]?.getInfoTag(
+            val model = availableTags[tag]?.getInfoTag(
                 line.substring(tt+1)
-            )
+            ) ?: continue
+
+            list.add(model)
         }
 
         return list

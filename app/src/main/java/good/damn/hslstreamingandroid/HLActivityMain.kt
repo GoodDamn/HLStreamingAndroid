@@ -2,6 +2,7 @@ package good.damn.hslstreamingandroid
 
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.hslstreamingandroid.http.HLClient
 import good.damn.hslstreamingandroid.http.listeners.HLListenerOnGetContentM3U8
@@ -10,6 +11,10 @@ import good.damn.hslstreamingandroid.model.HLModelStreaming
 class HLActivityMain
 : AppCompatActivity(),
 HLListenerOnGetContentM3U8 {
+
+    companion object {
+        private const val TAG = "HLActivityMain"
+    }
 
     override fun onCreate(
         savedInstanceState: Bundle?
@@ -28,7 +33,7 @@ HLListenerOnGetContentM3U8 {
     }
 
     override fun onGetM3U8(
-        availableStreamers: Array<HLModelStreaming>
+        availableStreamers: List<HLModelStreaming>
     ) {
 
     }

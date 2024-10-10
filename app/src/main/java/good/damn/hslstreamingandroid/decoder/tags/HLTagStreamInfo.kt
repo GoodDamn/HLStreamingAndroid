@@ -11,27 +11,43 @@ class HLTagStreamInfo
 
     companion object {
         private const val TAG = "HLTagStreamInfo"
+
+        private const val KEY_BANDWIDTH = "BANDWIDTH"
+        private const val KEY_RESOLUTION = "RESOLUTION"
+        private const val KEY_FRAME_RATE = "FRAME-RATE"
+        private const val KEY_URL = "URL"
     }
 
     override fun getInfoTag(
         line: String
     ): HLModelStreaming {
-        Log.d(TAG, "getInfoTag: $line")
-        val properties = line.getProperties(0x2c)
+        val properties = line.getProperties(
+            0x2c,
+            "="
+        )
         Log.d(TAG, "getInfoTag: PROPS: $properties")
         
         val bandwidth = properties[
-            "BANDWIDTH"
+            KEY_BANDWIDTH
         ]?.toInt() ?: 0
         
         val resolution = properties[
-            "RESOLUTION"
+            KEY_RESOLUTION
         ]?.toSize() ?: Size(0,0)
+
+        val frameRate = properties[
+            KEY_RESOLUTION
+        ]?.toFloatOrNull() ?: 30.0f
+
+        val url = properties[
+            KEY_URL
+        ]
 
         return HLModelStreaming(
             bandwidth,
             resolution,
-            ""
+            frameRate,
+            url
         )
     }
 }

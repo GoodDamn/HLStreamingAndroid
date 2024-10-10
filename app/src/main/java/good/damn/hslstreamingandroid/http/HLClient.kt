@@ -1,6 +1,7 @@
 package good.damn.hslstreamingandroid.http
 
 import android.util.Log
+import good.damn.hslstreamingandroid.HLApp
 import good.damn.hslstreamingandroid.decoder.HLDecoderM3U8
 import good.damn.hslstreamingandroid.extensions.readAll
 import good.damn.hslstreamingandroid.http.listeners.HLListenerOnGetContentM3U8
@@ -49,7 +50,12 @@ class HLClient(
         Log.d(TAG, "getContentAsync: $st")
 
         val decoder = HLDecoderM3U8(st)
-        decoder.decode()
+        val playlist = decoder.decode()
+        HLApp.ui {
+            onGetContentStreaming?.onGetM3U8(
+                playlist
+            )
+        }
     }
 
 }
