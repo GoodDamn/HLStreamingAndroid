@@ -36,7 +36,7 @@ class HLTagStreamInfo
         ]?.toSize() ?: Size(0,0)
 
         val frameRate = properties[
-            KEY_RESOLUTION
+            KEY_FRAME_RATE
         ]?.toFloatOrNull() ?: 30.0f
 
         val url = properties[
