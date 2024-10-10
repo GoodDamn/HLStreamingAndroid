@@ -15,7 +15,7 @@
         android:theme="@style/Theme.HSLStreamingAndroid"
         android:name=".HLApp"
         tools:targetApi="31">
-        <activity android:name=".HLActivityMain"
+        <activity android:name=".HLActivityMainOnGetPlaylist"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

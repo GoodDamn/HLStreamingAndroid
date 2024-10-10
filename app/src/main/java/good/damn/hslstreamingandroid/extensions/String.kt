@@ -83,3 +83,11 @@ fun String.getProperties(
         set(key,value)
     }
 }
+
+fun String.toLocalPathUrl(): String {
+    val indexSub = lastIndexOf("/")
+    return substring(
+        0,
+        indexSub+1
+    )
+}

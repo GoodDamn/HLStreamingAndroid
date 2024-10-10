@@ -1,16 +1,14 @@
 package good.damn.hslstreamingandroid
 
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import good.damn.hslstreamingandroid.http.HLClient
-import good.damn.hslstreamingandroid.http.listeners.HLListenerOnGetContentM3U8
-import good.damn.hslstreamingandroid.model.HLModelStreaming
+import good.damn.hslstreamingandroid.http.listeners.HLListenerM3U8OnGetPlaylist
+import good.damn.hslstreamingandroid.model.m3u8.HLModelM3U8Playlist
 
-class HLActivityMain
+class HLActivityMainOnGetPlaylist
 : AppCompatActivity(),
-HLListenerOnGetContentM3U8 {
+HLListenerM3U8OnGetPlaylist {
 
     companion object {
         private const val TAG = "HLActivityMain"
@@ -26,16 +24,21 @@ HLListenerOnGetContentM3U8 {
         HLClient(
             "https://flipfit-cdn.akamaized.net/flip_hls/664d87dfe8e47500199ee49e-dbd56b/video_h1.m3u8"
         ).apply {
-            onGetContentStreaming = this@HLActivityMain
+            onGetContentStreaming = this@HLActivityMainOnGetPlaylist
             getContentAsync()
         }
 
     }
 
-    override fun onGetM3U8(
-        availableStreamers: List<HLModelStreaming>
+    override fun onGetM3U8Playlist(
+        playlist: HLModelM3U8Playlist
     ) {
-
+        val play = playlist.playlist[0]
+        HLClient(
+            playlist.url + play.url
+        ).apply {
+            getContentAsync()
+        }
     }
 
 }
