@@ -17,7 +17,7 @@ class HLTagStreamInfo
         line: String
     ): HLModelStreaming {
         Log.d(TAG, "getInfoTag: $line")
-        val properties = line.getProperties()
+        val properties = line.getProperties(0x2c)
         Log.d(TAG, "getInfoTag: PROPS: $properties")
         
         val bandwidth = properties[

@@ -11,6 +11,8 @@ class HLDecoderM3U8(
 ) {
 
     companion object {
+        private const val TAG = "HLDecoderM3U8"
+
         private val availableTags = hashMapOf(
             "EXT-X-STREAM-INF" to HLTagStreamInfo()
         )
@@ -30,6 +32,9 @@ class HLDecoderM3U8(
             }
 
             val tag = line.substring(0,tt)
+            val params = line.substring(tt+1)
+
+            Log.d(TAG, "decode: $tag $params")
 
             availableTags[tag]?.getInfoTag(
                 line.substring(tt+1)

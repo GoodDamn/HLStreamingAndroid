@@ -48,12 +48,8 @@ class HLClient(
 
         Log.d(TAG, "getContentAsync: $st")
 
-        val decoder = HLDecoderM3U8(
-            st
-        )
-
+        val decoder = HLDecoderM3U8(st)
         decoder.decode()
-
     }
 
 }
