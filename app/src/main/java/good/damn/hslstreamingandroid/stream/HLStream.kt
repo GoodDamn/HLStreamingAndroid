@@ -1,13 +1,19 @@
 package good.damn.hslstreamingandroid.stream
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.media.MediaCodec
+import android.media.MediaMetadataRetriever
 import android.util.Log
 import good.damn.hslstreamingandroid.extensions.readAll
+import good.damn.hslstreamingandroid.extensions.write
+import good.damn.hslstreamingandroid.files.HLFile
 import good.damn.hslstreamingandroid.model.m3u8.sequence.HLModelM3U8Sequences
 import good.damn.hslstreamingandroid.model.m3u8.sequence.HLModelTSSequence
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 import java.net.URL
 import java.nio.charset.StandardCharsets
 
@@ -19,17 +25,44 @@ class HLStream(
         private const val TAG = "HLStream"
     }
 
+    var onGetFrame: ((Bitmap) -> Unit)? = null
+
     private val mScope = CoroutineScope(
         Dispatchers.IO
     )
 
     fun start() = mScope.launch {
+        val media = MediaMetadataRetriever()
+
         mSequences.sequences.forEach {
             val data = URL(
                 mSequences.url + it.url
             ).openStream().readAll(
                 8192
             )
+
+            val file = HLFile(
+                it.url
+            ).apply {
+                createFile()
+                write(data)
+            }
+
+            media.setDataSource(
+                file.path
+            )
+
+            media.getFrameAtTime(0)?.apply {
+                Log.d(TAG, "start: FRAME_WIDTH: $width $height")
+                write(
+                    HLFile(
+                        "${it.url}.jpeg"
+                    )
+                )
+            }
+
+
+
             Log.d(
                 TAG,
                 "start: ${it.url} DATA_SIZE: ${data.size} data: ${

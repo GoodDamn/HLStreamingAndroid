@@ -19,7 +19,7 @@ class HLTagTsInfo
         val split = line.split(",\n")
 
         return HLModelTSSequence(
-            split[1],
+            split[1].trim(),
             split[0].toFloat()
         )
     }

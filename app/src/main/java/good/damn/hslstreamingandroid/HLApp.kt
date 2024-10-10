@@ -3,10 +3,13 @@ package good.damn.hslstreamingandroid
 import android.app.Application
 import android.os.Looper
 import android.os.Handler
+import java.io.File
 
 class HLApp: Application() {
 
     companion object {
+
+        lateinit var appDir: File
 
         val mainHandler = Handler(
             Looper.getMainLooper()
@@ -23,8 +26,7 @@ class HLApp: Application() {
     override fun onCreate() {
         super.onCreate()
 
-
-
+        appDir = applicationContext.cacheDir
     }
 
 }
