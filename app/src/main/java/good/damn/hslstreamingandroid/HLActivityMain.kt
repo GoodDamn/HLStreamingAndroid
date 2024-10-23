@@ -12,6 +12,7 @@ import good.damn.hslstreamingandroid.model.HLModelStreaming
 import good.damn.hslstreamingandroid.model.m3u8.HLModelM3U8Playlist
 import good.damn.hslstreamingandroid.model.m3u8.sequence.HLModelM3U8Sequences
 import good.damn.hslstreamingandroid.stream.HLStream
+import good.damn.hslstreamingandroid.views.SKViewBitmap
 
 class HLActivityMain
 : AppCompatActivity(),
@@ -22,7 +23,7 @@ HLListenerM3U8OnGetSequences {
         private const val TAG = "HLActivityMain"
     }
 
-    private var mImageView: ImageView? = null
+    private var mViewBitmap: SKViewBitmap? = null
 
     override fun onCreate(
         savedInstanceState: Bundle?
@@ -38,7 +39,7 @@ HLListenerM3U8OnGetSequences {
             getPlaylistAsync()
         }
 
-        mImageView = ImageView(
+        mViewBitmap = SKViewBitmap(
             this
         ).apply {
             setContentView(this)
@@ -68,15 +69,17 @@ HLListenerM3U8OnGetSequences {
         Log.d(TAG, "onGetM3U8Sequences: $sequences")
 
         HLStream(
+            streamConfig,
             sequences
         ).apply {
             onGetFrame = {
                 HLApp.ui {
-                    mImageView?.setImageBitmap(
-                        it
-                    )
+                    mViewBitmap?.apply {
+                        bitmap = it
+                    }
                 }
             }
+            stream()
             start()
         }
     }

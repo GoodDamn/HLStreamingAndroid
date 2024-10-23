@@ -25,6 +25,7 @@ class HLTagStreamInfo
             0x2c,
             "="
         )
+
         Log.d(TAG, "getInfoTag: PROPS: $properties")
         
         val bandwidth = properties[
