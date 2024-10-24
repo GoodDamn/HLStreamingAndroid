@@ -19,24 +19,20 @@ import java.net.URLConnection
 import java.nio.charset.StandardCharsets
 
 class HLClient(
-    url: String
+    private val mScope: CoroutineScope
 ) {
 
     companion object {
         private const val TAG = "HLClient"
     }
 
-    private val mUrl = URL(url)
-    private val mLocalPath = url.toLocalPathUrl()
+    var url: URL? = null
+    var localPath: String? = null
+
     private var mUrlConnection: URLConnection? = null
 
     var onGetPlaylist: HLListenerM3U8OnGetPlaylist? = null
     var onGetSequences: HLListenerM3U8OnGetSequences? = null
-
-    private val mScope = CoroutineScope(
-        Dispatchers.IO
-    )
-
 
     fun getPlaylistAsync() = mScope.launch {
         val st = getInputData()
@@ -44,10 +40,11 @@ class HLClient(
         
         val decoder = HLDecoderM3U8(st)
         val playlist = decoder.decode<HLModelStreaming>()
-        HLApp.ui {
+
+        localPath?.let {
             onGetPlaylist?.onGetM3U8Playlist(
                 HLModelM3U8Playlist(
-                    mLocalPath,
+                    it,
                     playlist
                 )
             )
@@ -63,11 +60,11 @@ class HLClient(
         val decoder = HLDecoderM3U8(st)
         val sequences = decoder.decode<HLModelTSSequence>()
 
-        HLApp.ui {
+        localPath?.let {
             onGetSequences?.onGetM3U8Sequences(
                 streamConfig,
                 HLModelM3U8Sequences(
-                    mLocalPath,
+                    it,
                     sequences
                 )
             )
@@ -75,7 +72,7 @@ class HLClient(
     }
 
     private fun getInputData(): String? {
-        mUrlConnection = mUrl.openConnection().apply {
+        mUrlConnection = url?.openConnection()?.apply {
             connect()
         }
 

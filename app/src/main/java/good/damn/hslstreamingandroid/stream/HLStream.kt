@@ -22,18 +22,13 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class HLStream(
-    private val mStreamOptions: HLModelStreaming,
-    private val mSequences: HLModelM3U8Sequences
-) {
+class HLStream {
 
     companion object {
         private const val TAG = "HLStream"
     }
 
-    var onGetFrame: (
-        (Bitmap) -> Unit
-    )? = null
+    var onGetFrame: HLListenerOnGetFrame? = null
 
     private val mSequencer = ConcurrentLinkedDeque<
         HLModelTSSequence
@@ -41,16 +36,22 @@ class HLStream(
 
     private var mIsReachEnd = false
 
+    var sequences: HLModelM3U8Sequences? = null
+
     private val mScope = CoroutineScope(
         Dispatchers.IO
     )
 
-    fun stream() {
+    fun stream() = mScope.run {
         mIsReachEnd = false
-        mScope.launch {
-            mSequences.sequences.forEach {
+
+        val seq = sequences
+            ?: return@run
+
+        launch {
+            seq.sequences.forEach {
                 val data = URL(
-                    mSequences.url + it.url
+                    seq.url + it.url
                 ).openStream().readAll(
                     8192
                 )
@@ -71,7 +72,6 @@ class HLStream(
     }
 
     fun start() = mScope.launch {
-
         while (
             !mIsReachEnd || mSequencer.isNotEmpty()
         ) {
@@ -109,7 +109,7 @@ class HLStream(
                     FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC
                 ) ?: break
 
-                onGetFrame?.invoke(
+                onGetFrame?.onGetFrame(
                     bitmap
                 )
 
@@ -117,8 +117,6 @@ class HLStream(
                 seek += (currentTime - prevTime) * 500L
                 prevTime = currentTime
             }
-
-
         }
     }
 
