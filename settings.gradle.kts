@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "HSLStreamingAndroid"
 include(":app")
- 
+include(":HLSViewPlayer")

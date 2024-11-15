@@ -21,8 +21,12 @@ import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.ceil
 
-class HLStream {
+class HLStream(
+    private val scopeStream: CoroutineScope,
+    private val scopeFrame: CoroutineScope
+) {
 
     companion object {
         private const val TAG = "HLStream"
@@ -36,17 +40,10 @@ class HLStream {
 
     private var mIsReachEnd = false
 
-    var sequences: HLModelM3U8Sequences? = null
-
-    private val mScope = CoroutineScope(
-        Dispatchers.IO
-    )
-
-    fun stream() = mScope.run {
+    fun stream(
+        seq: HLModelM3U8Sequences
+    ) = scopeStream.run {
         mIsReachEnd = false
-
-        val seq = sequences
-            ?: return@run
 
         launch {
             seq.sequences.forEach {
@@ -71,7 +68,9 @@ class HLStream {
         }
     }
 
-    fun start() = mScope.launch {
+    fun start(
+        streamOptions: HLModelStreaming
+    ) = scopeFrame.launch {
         while (
             !mIsReachEnd || mSequencer.isNotEmpty()
         ) {
@@ -92,12 +91,17 @@ class HLStream {
 
             var bitmap: Bitmap?
 
-            var currentTime: Long
-            var prevTime = System.currentTimeMillis()
-            var seek = 0L
-
             val duration = sequence.durationSec * 1000L
 
+            val frames = ceil(
+                streamOptions.frameRate * sequence.durationSec
+            ).toInt()
+
+            val dt = (
+               1000 / streamOptions.frameRate
+            ).toLong()
+
+            var seek = 0L
             while (true) {
                 if (seek > duration) {
                     Log.d(TAG, "start: SEQUENCE_END")
@@ -113,9 +117,7 @@ class HLStream {
                     bitmap
                 )
 
-                currentTime = System.currentTimeMillis()
-                seek += (currentTime - prevTime) * 500L
-                prevTime = currentTime
+                seek += dt
             }
         }
     }

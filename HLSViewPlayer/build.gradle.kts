@@ -1,20 +1,17 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 }
 
 android {
-    namespace = "good.damn.hslstreamingandroid"
+    namespace = "good.damn.hlsviewplayer"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "good.damn.hslstreamingandroid"
-        minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = 16
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -37,12 +34,9 @@ android {
 
 dependencies {
 
-    implementation(libs.ffmpegmediametadataretriever.core)
-    implementation(libs.ffmpegmediametadataretriever.native)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(project(":HLSViewPlayer"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -1,13 +1,11 @@
 package good.damn.hslstreamingandroid
 
 import android.graphics.Bitmap
-import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageView
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.shape.ShapeAppearanceModel.CornerSizeUnaryOperator
+import good.damn.hlsviewplayer.HLViewPlayer
 import good.damn.hslstreamingandroid.extensions.toLocalPathUrl
 import good.damn.hslstreamingandroid.http.HLClient
 import good.damn.hslstreamingandroid.http.listeners.HLListenerM3U8OnGetPlaylist
@@ -17,7 +15,6 @@ import good.damn.hslstreamingandroid.model.m3u8.HLModelM3U8Playlist
 import good.damn.hslstreamingandroid.model.m3u8.sequence.HLModelM3U8Sequences
 import good.damn.hslstreamingandroid.stream.HLListenerOnGetFrame
 import good.damn.hslstreamingandroid.stream.HLStream
-import good.damn.hslstreamingandroid.views.SKViewBitmap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.net.URL
@@ -31,7 +28,7 @@ HLListenerM3U8OnGetSequences, HLListenerOnGetFrame {
         private const val TAG = "HLActivityMain"
     }
 
-    private var mViewBitmap: SKViewBitmap? = null
+    private var mViewBitmap: HLViewPlayer? = null
 
     private val mClient = HLClient(
         CoroutineScope(
@@ -42,7 +39,14 @@ HLListenerM3U8OnGetSequences, HLListenerOnGetFrame {
         onGetSequences = this@HLActivityMain
     }
 
-    private val mStream = HLStream().apply {
+    private val mStream = HLStream(
+        scopeStream = CoroutineScope(
+            Dispatchers.IO
+        ),
+        scopeFrame = CoroutineScope(
+            Dispatchers.Default
+        )
+    ).apply {
         onGetFrame = this@HLActivityMain
     }
 
@@ -55,13 +59,13 @@ HLListenerM3U8OnGetSequences, HLListenerOnGetFrame {
 
         val url = "https://flipfit-cdn.akamaized.net/flip_hls/664d87dfe8e47500199ee49e-dbd56b/video_h1.m3u8"
 
-        mClient.apply {
-            localPath = url.toLocalPathUrl()
-            this@apply.url = URL(url)
-            getPlaylistAsync()
-        }
+//        mClient.apply {
+//            localPath = url.toLocalPathUrl()
+//            this@apply.url = URL(url)
+//            getPlaylistAsync()
+//        }
 
-        mViewBitmap = SKViewBitmap(
+        mViewBitmap = HLViewPlayer(
             this
         ).apply {
             setContentView(this)
@@ -72,7 +76,8 @@ HLListenerM3U8OnGetSequences, HLListenerOnGetFrame {
     override fun onGetM3U8Playlist(
         playlist: HLModelM3U8Playlist
     ) {
-        val play = playlist.playlist[0]
+        val play = playlist.playlist
+            .last()
 
         mClient.apply {
             val u = playlist.url + play.url
@@ -93,9 +98,8 @@ HLListenerM3U8OnGetSequences, HLListenerOnGetFrame {
         Log.d(TAG, "onGetM3U8Sequences: $seq")
 
         mStream.apply {
-            sequences = seq
-            stream()
-            start()
+            stream(seq)
+            start(streamConfig)
         }
     }
 
