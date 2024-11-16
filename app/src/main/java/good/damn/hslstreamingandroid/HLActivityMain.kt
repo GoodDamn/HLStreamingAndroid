@@ -59,11 +59,11 @@ HLListenerM3U8OnGetSequences, HLListenerOnGetFrame {
 
         val url = "https://flipfit-cdn.akamaized.net/flip_hls/664d87dfe8e47500199ee49e-dbd56b/video_h1.m3u8"
 
-//        mClient.apply {
-//            localPath = url.toLocalPathUrl()
-//            this@apply.url = URL(url)
-//            getPlaylistAsync()
-//        }
+        mClient.apply {
+            localPath = url.toLocalPathUrl()
+            this@apply.url = URL(url)
+            getPlaylistAsync()
+        }
 
         mViewBitmap = HLViewPlayer(
             this

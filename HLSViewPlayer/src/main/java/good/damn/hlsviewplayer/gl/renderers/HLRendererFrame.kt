@@ -11,7 +11,11 @@ import good.damn.hlsviewplayer.gl.textures.HLRenderTexture
 class HLRendererFrame
 : GLSurfaceView.Renderer {
 
-    var bitmap: Bitmap? = null
+    var bitmap: Bitmap?
+        get() = mTexture.bitmap
+        set(v) {
+            mTexture.bitmap = v
+        }
 
     private lateinit var mQuad: HLRenderQuad
     private lateinit var mTexture: HLRenderTexture

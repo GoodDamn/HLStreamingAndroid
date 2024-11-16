@@ -30,7 +30,13 @@ HLDrawable {
                     "uniform vec2 u_res;" +
                     "uniform sampler2D u_tex;" +
                     "void main () {" +
-                    "gl_FragColor = vec4(1.0,1.0,0.0,1.0);" +
+                        "vec2 n = vec2(" +
+                            "gl_FragCoord.x / u_res.x," +
+                            "(u_res.y - gl_FragCoord.y) / u_res.y" +
+                        ");" +
+                        "gl_FragColor = texture2D(" +
+                            "u_tex, n" +
+                        ");" +
                     "}"
             )
         )
