@@ -1,5 +1,6 @@
 package good.damn.hlsviewplayer.gl.renderers
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.opengl.GLSurfaceView
 import javax.microedition.khronos.egl.EGLConfig
@@ -8,8 +9,9 @@ import android.opengl.GLES20.*
 import good.damn.hlsviewplayer.gl.quad.HLRenderQuad
 import good.damn.hlsviewplayer.gl.textures.HLRenderTexture
 
-class HLRendererFrame
-: GLSurfaceView.Renderer {
+class HLRendererFrame(
+    private val context: Context
+): GLSurfaceView.Renderer {
 
     var bitmap: Bitmap?
         get() = mTexture.bitmap
@@ -29,11 +31,13 @@ class HLRendererFrame
         mProgram = glCreateProgram()
 
         mQuad = HLRenderQuad(
-            mProgram
+            mProgram,
+            context
         )
 
         mTexture = HLRenderTexture(
-            mProgram
+            mProgram,
+            context
         )
 
         glLinkProgram(

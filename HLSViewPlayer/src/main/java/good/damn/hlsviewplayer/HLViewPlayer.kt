@@ -19,7 +19,9 @@ class HLViewPlayer(
             requestRender()
         }
 
-    private val mRenderer = HLRendererFrame()
+    private val mRenderer = HLRendererFrame(
+        context
+    )
 
     init {
         setEGLContextClientVersion(2)

@@ -1,14 +1,18 @@
 package good.damn.hlsviewplayer.gl.textures
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.opengl.GLUtils
+import good.damn.hlsviewplayer.R
+import good.damn.hlsviewplayer.extensions.rawText
 import good.damn.hlsviewplayer.gl.interfaces.HLDrawable
 import good.damn.hlsviewplayer.gl.interfaces.HLLayoutable
 import good.damn.hlsviewplayer.gl.GL.*
 import good.damn.hlsviewplayer.utils.gl.HLUtilsGL
 
 class HLRenderTexture(
-    program: Int
+    program: Int,
+    context: Context
 ): HLLayoutable,
 HLDrawable {
 
@@ -26,18 +30,9 @@ HLDrawable {
             program,
             HLUtilsGL.loadShader(
                 GL_FRAGMENT_SHADER,
-                "precision mediump float;" +
-                    "uniform vec2 u_res;" +
-                    "uniform sampler2D u_tex;" +
-                    "void main () {" +
-                        "vec2 n = vec2(" +
-                            "gl_FragCoord.x / u_res.x," +
-                            "(u_res.y - gl_FragCoord.y) / u_res.y" +
-                        ");" +
-                        "gl_FragColor = texture2D(" +
-                            "u_tex, n" +
-                        ");" +
-                    "}"
+                context.rawText(
+                    R.raw.frag
+                )
             )
         )
 

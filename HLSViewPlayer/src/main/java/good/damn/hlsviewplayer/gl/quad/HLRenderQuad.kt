@@ -1,14 +1,18 @@
 package good.damn.hlsviewplayer.gl.quad
 
+import android.content.Context
+import good.damn.hlsviewplayer.R
 import good.damn.hlsviewplayer.extensions.createFloatBuffer
 import good.damn.hlsviewplayer.extensions.createIndicesBuffer
+import good.damn.hlsviewplayer.extensions.rawText
 import good.damn.hlsviewplayer.gl.GL.*
 import good.damn.hlsviewplayer.gl.interfaces.HLDrawable
 import good.damn.hlsviewplayer.gl.interfaces.HLLayoutable
 import good.damn.hlsviewplayer.utils.gl.HLUtilsGL
 
 class HLRenderQuad(
-    program: Int
+    program: Int,
+    context: Context
 ): HLDrawable,
     HLLayoutable {
 
@@ -32,12 +36,12 @@ class HLRenderQuad(
     private var mAttrPosition = 0
 
     init {
+
         val vertexShader = HLUtilsGL.loadShader(
             GL_VERTEX_SHADER,
-            "attribute vec4 position;" +
-                    "void main() {" +
-                    "gl_Position = position;" +
-                    "}"
+            context.rawText(
+                R.raw.vertex
+            )
         )
 
         glAttachShader(
