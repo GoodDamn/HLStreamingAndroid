@@ -30,8 +30,6 @@ class HLRenderQuad(
     ).createFloatBuffer()
 
     private var mAttrPosition = 0
-    private var mUniTexture = 0
-    private var mUniResolution = 0
 
     init {
         val vertexShader = HLUtilsGL.loadShader(
@@ -47,21 +45,6 @@ class HLRenderQuad(
             vertexShader
         )
 
-        mAttrPosition = glGetAttribLocation(
-            program,
-            "position"
-        )
-
-        mUniTexture = glGetUniformLocation(
-            program,
-            "u_tex"
-        )
-
-        mUniResolution = glGetUniformLocation(
-            program,
-            "u_res"
-        )
-
     }
 
 
@@ -70,15 +53,15 @@ class HLRenderQuad(
         height: Int,
         program: Int
     ) {
-
+        mAttrPosition = glGetAttribLocation(
+            program,
+            "position"
+        )
     }
 
     override fun draw(
         program: Int
     ) {
-        glUseProgram(
-            program
-        )
 
         glEnableVertexAttribArray(
             mAttrPosition

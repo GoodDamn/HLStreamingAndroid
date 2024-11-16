@@ -6,6 +6,7 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES20.*
 import good.damn.hlsviewplayer.gl.quad.HLRenderQuad
+import good.damn.hlsviewplayer.gl.textures.HLRenderTexture
 
 class HLRendererFrame
 : GLSurfaceView.Renderer {
@@ -13,6 +14,7 @@ class HLRendererFrame
     var bitmap: Bitmap? = null
 
     private lateinit var mQuad: HLRenderQuad
+    private lateinit var mTexture: HLRenderTexture
 
     private var mProgram = 0
 
@@ -20,16 +22,23 @@ class HLRendererFrame
         gl: GL10?,
         config: EGLConfig?
     ) {
-
         mProgram = glCreateProgram()
-        glLinkProgram(
-            mProgram
-        )
 
         mQuad = HLRenderQuad(
             mProgram
         )
 
+        mTexture = HLRenderTexture(
+            mProgram
+        )
+
+        glLinkProgram(
+            mProgram
+        )
+
+        glUseProgram(
+            mProgram
+        )
     }
 
     override fun onSurfaceChanged(
@@ -37,7 +46,17 @@ class HLRendererFrame
         width: Int,
         height: Int
     ) {
+        mQuad.layout(
+            width,
+            height,
+            mProgram
+        )
 
+        mTexture.layout(
+            width,
+            height,
+            mProgram
+        )
     }
 
     override fun onDrawFrame(
@@ -55,6 +74,13 @@ class HLRendererFrame
             1.0f
         )
 
+        mTexture.draw(
+            mProgram
+        )
+
+        mQuad.draw(
+            mProgram
+        )
 
     }
 
